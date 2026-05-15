@@ -1,24 +1,36 @@
 import axios from "axios";
+import { config } from "dotenv";
 import 'dotenv/config.js';
 
-const BASE_URL = "https://api.github.com/search";
+
+const BASE_URL = "https://api.github.com";
+
+
 
 const USER_NAME = process.env.USERNAME;
 const KEY = process.env.TOKEN;
 
 
-const githubApi = axios.create({
-    baseURL: BASE_URL,
-    auth: {
-        username: USER_NAME ,
+const gitAuth = axios.create({
+    baseURL: BASE_URL
+});
+
+
+gitAuth.interceptors.request.use((config)=>{
+    config.auth = {
+        username: USER_NAME,
         password: KEY
-    }
-})
+    };
+    return config;
+});
+
+
+
 
 export async function  searchByRepos(params){
 
     try {
-        const response = await githubApi.get(`/repositories`, 
+        const response = await gitAuth.get(`/search/repositories`, 
         {
             params:{
                 q: params.q, 
@@ -76,7 +88,7 @@ export async function  searchByRepos(params){
 
 export async function searchByUser(params) {
     try {
-        const response = await githubApi.get('/users', 
+        const response = await gitAuth.get('/users', 
             {params:{
                 q: params.q, 
                 sort: params.sort,
@@ -92,7 +104,13 @@ export async function searchByUser(params) {
 
 }
 
-
-export async function getUsers ({param}) {
-    
+export async function getUserRepos(params){
+    try {
+        const response = await searchApi
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+
+
