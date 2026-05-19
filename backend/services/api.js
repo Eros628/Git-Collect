@@ -88,7 +88,7 @@ export async function  searchByRepos(params){
 
 export async function searchByUser(params) {
     try {
-        const response = await gitAuth.get('/users', 
+        const response = await gitAuth.get('/search/users', 
             {params:{
                 q: params.q, 
                 sort: params.sort,
