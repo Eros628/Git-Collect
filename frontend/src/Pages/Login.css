@@ -6,11 +6,12 @@
 
 .login-page{
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     display: flex;
     flex-direction: column;
     background-image: radial-gradient(circle at left, #20327B 10%, #1A2860 31%, #16224D 46%, #111935 65%, #0D1323 81%, #0C111E 91%, #0B0F19 100%);
     color: white;
+    gap: 10px;
 }
 
 .header{
@@ -35,9 +36,9 @@
 }
 
 .hero-section{
+    flex: 1;
     display: flex;
     padding: 0px 40px;
-    align-items: center;
     height: 100%;
 }
 
@@ -47,7 +48,6 @@
     flex-direction: column;
     gap: 20px;
     height: 100%;
-    padding-top: 40px;
 }
 
 .hero-text-container{
@@ -66,7 +66,7 @@
 
 .hero-description{
     font-family: var(--secondary-font);
-    font-size: var(--text-header-small);
+    font-size: var(--text-normal-large);
     text-align: justify;
 }
 
@@ -120,7 +120,6 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    padding-top: 40px;
 }
 
 .login-card{
@@ -229,6 +228,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        gap: 50px;
     }
     .hero-col1{
         align-items: center;

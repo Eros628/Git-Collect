@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import {Search, Layers, Info} from 'lucide-react';
 import '../Pages/Login.css';
 
@@ -68,11 +69,12 @@ function Login(){
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
 
     )
 }
-import { Form } from "lucide-react";
+
 
 
 export default Login;

@@ -1,0 +1,22 @@
+.footer svg{
+  height: 24px;
+  width: 24px;
+}
+
+.footer{
+    background-color: #1A1B1D;
+    display: flex;
+    padding: 15px 40px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.copyright-container{
+    font-family: var(--secondary-font);
+    font-size: var(--text-normal-small);
+}
+
+.social-icons-container{
+    display: flex;
+    gap: 20px;
+}
