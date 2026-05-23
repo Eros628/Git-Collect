@@ -1,36 +1,13 @@
 import axios, { formToJSON } from "axios";
-import { config } from "dotenv";
-import 'dotenv/config.js';
-
-
-const BASE_URL = "https://api.github.com";
-
-
-
-const USER_NAME = process.env.USERNAME;
-const KEY = process.env.TOKEN;
-
-
-const gitAuth = axios.create({
-    baseURL: BASE_URL
-});
-
-
-gitAuth.interceptors.request.use((config)=>{
-    config.auth = {
-        username: USER_NAME,
-        password: KEY
-    };
-    return config;
-});
+import { githubConfig } from "../config/github.js";
 
 
 
 
-export async function  searchByRepos(params){
+export async function  searchByRepos(params, githubAxios){
 
     try {
-        const response = await gitAuth.get(`/search/repositories`, 
+        const response = await githubAxios.get(`/search/repositories`, 
         {
             params:{
                 q: params.q, 
@@ -38,8 +15,8 @@ export async function  searchByRepos(params){
                 page: params.page,
                 order: params.order,
                 per_page: params.per_page
-            }
-        }
+            },
+        },
         );
 
         const items = response.data.items.map(item =>{
@@ -86,9 +63,9 @@ export async function  searchByRepos(params){
     }
 }
 
-export async function searchByUser(params) {
+export async function searchByUser(params, githubAxios) {
     try {
-        const response = await gitAuth.get('/search/users', 
+        const response = await githubAxios.get('/search/users', 
             {params:{
                 q: params.q, 
                 sort: params.sort,
@@ -104,14 +81,14 @@ export async function searchByUser(params) {
 
 }
 
-export async function getUserAllRepos(user){
+export async function getUserAllRepos(user, githubAxios){
     try {
-        const response = await gitAuth.get(`/users/${user}/repos`);
-        const response_starred_repo = await gitAuth.get(`/users/${user}/starred`);
+        const response = await githubAxios.get(`/users/${user}/repos`);
+        const response_starred_repo = await githubAxios.get(`/users/${user}/starred`);
 
         const repos = await Promise.all( response.data.map(async (repo, index) =>{
             let isStarred = response_starred_repo.data.some(starItem => starItem.id === repo.id) ? "true" : "false";
-            const languages = await gitAuth.get(repo.languages_url);
+            const languages = await githubAxios.get(repo.languages_url);
            
 
             const item = {

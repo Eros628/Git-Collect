@@ -176,6 +176,7 @@
 }
 
 .login-btn{
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,7 +184,74 @@
     border-radius: 10px;
     border: none;
     cursor: pointer;
+    background-color: transparent;
+    transition:  color 0.5s ease-in 0.5s;
 }
+
+.login-btn::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    z-index: -1;
+    border-radius: 10px;
+    width:100%;
+    margin: auto;
+    transition:  all 0.5s ease-in 0.5s;
+}
+
+.login-btn::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: transparent;
+    z-index: -1;
+    border: 0px solid white;
+    margin: auto;
+    width: 0%;
+    transition: all 0.5s ease-in;
+}
+
+.login-btn:hover{
+    color: white;
+}
+
+.github-icon path{
+    fill: black;
+    transition: all 0.5s ease-in 0.5s;
+}
+
+.login-btn:hover .github-icon path{
+    fill: white;
+}
+
+.login-btn:hover::before{
+    width: 0%;
+    transition-delay: 0s;
+}
+
+.login-btn:hover::after{
+    border-radius: 10px;
+    transition-delay: 0.5s;
+    border-bottom: 1px solid white;
+    border-top:  1px solid white;
+    width: 100%;
+    animation: border-animate 0.5s ease-in alternate forwards 1s;
+}
+
+@keyframes border-animate{
+    to{
+        border-left: 1px solid white;
+        border-right: 1px solid white;
+    }
+}
+
 
 .login-btn > p{
     padding: 15px;
