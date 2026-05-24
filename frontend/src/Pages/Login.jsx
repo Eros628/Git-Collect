@@ -1,54 +1,53 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import {Search, Layers, Info} from 'lucide-react';
-import '../Pages/Login.css';
+import styles from '../Pages/Login.module.css';
 
 function Login(){
-
     return(
-        <div className="login-page">
+        <div className={styles['login-page']}>
             <Header />
-            <main className="hero-section">
-                <div className="hero-col1">
-                    <div className="hero-text-container">
-                        <h1 className="hero-big-text">
+            <main className={styles['hero-section']}>
+                <div className={styles['hero-col1']}>
+                    <div className={styles['hero-text-container']}>
+                        <h1 className={styles['hero-big-text']}>
                             Curate your <br /> <span>GitHub Universe</span>
                         </h1>
-                        <p className="hero-description">
+                        <p className={styles['hero-description']}>
                             GitCollect is the ultimate workspace to search, 
                             organize, and manage your favorite repositories 
                             and developer profiles using your personal GitHub token
                         </p>
                     </div>
-                    <div className="hero-features">
-                        <div className="feature-search feature-card">
-                            <div className="icon-container">
+                    <div className={styles['hero-features']}>
+                        <div className={styles['feature-card']}>
+                            <div className={styles['icon-container']}>
                                 <Search />
                             </div>
                             
-                            <p className="title-feature-text">Advance Search</p>
-                            <p className="description-feature-text">
+                            <p className={styles['title-feature-text']}>Advance Search</p>
+                            <p className={styles['description-feature-text']}>
                                 Query the GitHub API with precision filters for repos, users, and orgs
                             </p>
                             
                         </div>
-                        <div className="feature-collect feature-card">
-                            <div className="icon-container">
+                        <div className={styles['feature-card']}>
+                            <div className={styles['icon-container']}>
                                 <Layers />
                             </div>
                             
-                            <p className="title-feature-text">Collections</p>
-                            <p className="description-feature-text">
+                            <p className={styles['title-feature-text']}>Collections</p>
+                            <p className={styles['description-feature-text']}>
                                 Collect and organize your favorite repo into custom tagged folders.
                             </p>
                            
                         </div>
                     </div>
                 </div>
-                <div className="hero-col2">
-                    <div className="login-card">
+                <div className={styles['hero-col2']}>
+                    <div className={styles['login-card']}>
                         <div>
-                            <div className="logo-github-container">
+                            <div className={styles['logo-github-container']}>
                                 <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>github [#00b83d]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -7559.000000)" fill="#ffffff"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399" id="github-[#00b83d]"> </path> </g> </g> </g> </g></svg>
                             </div>
                             <h1>Connect to Workspace</h1>
@@ -58,14 +57,14 @@ function Login(){
                             ()=>{
                                 window.location.href = "http://localhost:3000/gitcollect/auth/github";
                             }
-                        } className="login-btn">
-                            <svg className="github-icon" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>github [#00b83d]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -7559.000000)"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399" id="github-[#00b83d]"> </path> </g> </g> </g> </g></svg>
+                        } className={styles['login-btn']}>
+                            <svg className={styles['github-icon']} viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>github [#00b83d]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -7559.000000)"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399" id="github-[#00b83d]"> </path> </g> </g> </g> </g></svg>
                             <p >
                                 Login with GitHub
                             </p>
                         </button>
                         <hr />
-                        <div className="information-card">
+                        <div className={styles['information-card']}>
                             <Info size={30}/>
                             <p >
                                 Authentication is securely processed through the standard GitHub OAuth 2.0 flow.
