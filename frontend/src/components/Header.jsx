@@ -6,7 +6,7 @@ function Header(){
     const location = useLocation();
     console.log(location.pathname);
     return(
-        <div className={location.pathname == '/login' ? 'header login' : 'header home'}>
+        <div className={(location.pathname == '/login' || location.pathname =='/') ? 'header login' : 'header home'}>
             <div className="logo-container">
                 <FolderGit2 />
                 <h1 className='name-site'>GitCollect</h1>

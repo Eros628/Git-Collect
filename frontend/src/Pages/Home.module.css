@@ -90,6 +90,7 @@
     font-family: var(--secondary-font);
     border-radius: 5px;
     font-size: var(--text-normal-small);
+    cursor: pointer;
 }
 
 .filter-container button > svg{
@@ -119,4 +120,58 @@
     font-family: var(--primary-font);
     color: white;
     text-align: center;
+}
+
+.type-filter{
+    position: relative;
+}
+
+.dropdown-wrapper{
+    position: absolute;
+    left: 0;
+    top: 94%;
+    right: 0;
+    width: 100%;
+    max-height: 80px;
+    overflow: auto;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #2F2F34;
+    display: flex;
+    flex-direction: column;
+    gap:3px;
+    text-align: start;
+}
+.dropdown-wrapper::-webkit-scrollbar{
+    width: 5px;
+}
+.dropdown-wrapper::-webkit-scrollbar-thumb{
+    background-color:#A8A7A7 ;
+}
+.dropdown-wrapper::-webkit-scrollbar-track{
+    background-color: #252529;
+}
+
+.search-in-filter, .language-filter{
+    position: relative;
+}
+
+.language-filter{
+    padding: 0px 10px !important;
+}
+
+.item-type{
+    width: 100%;
+    padding: 0px 6px !important;
+    border-radius: 0 !important;
+
+}
+
+.sort-filter{
+    position: relative;
+}
+
+
+.item-type:hover{
+    background-color: #A8A7A7;
 }
