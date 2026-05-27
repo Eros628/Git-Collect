@@ -14,26 +14,6 @@
     gap: 10px;
 }
 
-.header{
-    display: flex;
-    padding: 20px 40px;
-}
-
-.logo-container{
-    display: flex;
-    gap: 10px;
-    background-color: rgba(30, 37, 56, 88);
-    backdrop-filter: blur(10px);
-    width: fit-content;
-    padding: 10px 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-}
-
-.logo-container > h1{
-    font-size: var(--text-header-small);
-    font-family: var(--primary-font);
-}
 
 .hero-section{
     flex: 1;
@@ -46,6 +26,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 20px;
     height: 100%;
 }
@@ -66,7 +47,7 @@
 
 .hero-description{
     font-family: var(--secondary-font);
-    font-size: var(--text-normal-large);
+    font-size: var(--text-normal-meduim);
     text-align: justify;
 }
 
@@ -117,6 +98,7 @@
 .hero-col2{
     flex: 1;
     display: flex;
+    align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
@@ -327,6 +309,10 @@
 
     .login-card{
         max-width: 100%;
+    }
+
+    .hero-col2{
+        align-items: start;
     }
 }
 

@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import { useNavigate } from "react-router";
 import  styles from '../Pages/Home.module.css';
 import { ChevronDown, ChevronUp } from "lucide-react";
+import {TypeAnimation} from 'react-type-animation';
 
 
 
@@ -73,6 +74,7 @@ function Home(){
 
     const lang = ['Javascript','HTML','CSS' , "Python", "Typescript", "Java", "C++", 'C#', 'PHP', 'C', 'Shell', 'Go', 'Rust', 'Ruby', 'Swift', 'Dart', 'R', 'Kotlin']
 
+    const displayText = ['repositories', 'projects', 'libraries', 'tools', 'frameworks'];
 
     useEffect(()=>{
         setSelectedFilter(prev=>({
@@ -92,7 +94,9 @@ function Home(){
         <div className={styles['home-page']}>
             <Header />
             <div className= {styles['hero-section']}>
-                <h1 className={styles['text-hero-section']}>Find <span>repositories</span> <br/>worth keeping</h1>
+                <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
+                    "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
+                ]} wrapper="span" speed={50} repeat={Infinity}  /> <br/>worth keeping</h1>
             </div>
             <div className= {styles['search-container']}>
                 <div className={styles['search-bar-wrapper']}>
