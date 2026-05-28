@@ -16,3 +16,18 @@ export async function Auth(code){
 
     return token.data;
 }
+
+
+export async function  getUser(githubAxios) {
+    const user = await githubAxios.get('https://api.github.com/user');
+    const formatUser = {
+        username: user.data.login,
+        name: user.data.name,
+        avatar: user.data.avatar_url,
+        html_url: user.data.html_url,
+        following: user.data.following,
+        followers: user.data.followers,
+        repo_url: user.data.repo_url
+    }
+    return formatUser;
+}

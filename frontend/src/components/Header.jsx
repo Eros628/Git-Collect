@@ -2,7 +2,7 @@ import {FolderGit2} from 'lucide-react';
 import { useNavigate, useLocation} from 'react-router';
 import '../App.css';
 
-function Header(){
+function Header({user}){
     const location = useLocation();
     console.log(location.pathname);
     return(
@@ -25,8 +25,9 @@ function Header(){
                 (location.pathname != '/login' && location.pathname != "/" ) &&
                   <div className="profile-container">
                     <p className="username">
-                        Eros628
+                        {user.username}
                     </p>
+                    <img src= { user.avatar} alt="avatar picuture" className="avatar-container" />
                  </div>
             }
     

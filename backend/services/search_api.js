@@ -14,7 +14,7 @@ export async function  searchByRepos(params, githubAxios){
                 sort: params.sort,
                 page: params.page,
                 order: params.order,
-                per_page: params.per_page
+                per_page: 9
             },
         },
         );
@@ -36,6 +36,9 @@ export async function  searchByRepos(params, githubAxios){
                 stargazers_count,
                 created_at,
                 updated_at,
+                description,
+                topics,
+                language
             } = item;
 
             return  {
@@ -54,10 +57,13 @@ export async function  searchByRepos(params, githubAxios){
                 stargazers_count,
                 created_at,
                 updated_at,
+                description,
+                topics,
+                language
             } 
         });
 
-        return items;
+        return {total_count: response.data.total_count, items:items};
     } catch (error) {
         console.log(error);
     }
@@ -71,7 +77,7 @@ export async function searchByUser(params, githubAxios) {
                 sort: params.sort,
                 page: params.page,
                 order: params.order,
-                per_page: params.per_page
+                per_page: 9
             }}
         );
         return response;

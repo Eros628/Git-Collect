@@ -5,8 +5,9 @@ import { Search } from "lucide-react";
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router";
 import  styles from '../Pages/Home.module.css';
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
+import Card from "../components/Card";
 
 
 
@@ -16,15 +17,27 @@ function Home(){
     const [isSearchInOpen, setSearchInOpen] = useState(false);
     const [isLangOpen, setLangOpen] = useState(false);
     const [isSortOpen, setSortOpen] = useState(false);
-
+    const [user, setUser] = useState({});
+    const [hasResult, sethasResult] = useState(false);
+    const [result, setResult] = useState({totalcount: "", items:[]});
+    const [keyword, setKeyword]= useState("");
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
-    /* const verify = async()=>{
+
+
+    const verify = async()=>{
         try {
             const verify = await axios.get("http://localhost:3000/gitcollect/auth/verify", {
             withCredentials: true
             });
 
             if(verify.data.isLogged){
+                const userData = await axios.get("http://localhost:3000/gitcollect/auth/user", {
+                    withCredentials: true
+                });
+
+                setUser(userData.data);
+                console.log(userData.data);
                 return;
             }
 
@@ -37,7 +50,7 @@ function Home(){
 
     useEffect(()=>{
       verify();
-    }, []);*/
+    }, []);
     
     const filters = [{
             type: "repository",
@@ -46,7 +59,7 @@ function Home(){
             hasLang: true
         },
         {
-            type: "users",
+            type: "user",
             in: ['login', 'fullname', 'email'],
             sort: ['followers', 'repositories', 'joined'],
             hasLang: false
@@ -89,22 +102,77 @@ function Home(){
         }
     }, [selectedFilter.type]);
 
+    const getResult = async(fromSubmit = false)=>{
+        try {
+            let data; 
+            if(selectedFilter.type == "repository"){
+                data = await axios.get("http://localhost:3000/gitcollect/api/search/repositories", {withCredentials: true,
+                    params: {
+                        q: `${keyword} in:${selectedFilter.in} lang:${selectedFilter.lang}`,
+                        sort: selectedFilter.sort,
+                        page: page
+                    }},
+                    );
+            }
+            else if(selectedFilter.type == "user" || selectedFilter.type == "org"){
+                data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
+                    {withCredentials: true,
+                    params: {
+                        q: `${keyword} in:${selectedFilter.in} type:${selectedFilter.type}`,
+                        sort: selectedFilter.sort,
+                        page: page
+                    }},
+                    );
+            }
+
+            if(fromSubmit){
+                setResult({totalcount:data.data.total_count, items: [...data.data.items]});
+            }
+
+            else{
+                setResult(prev=>({totalcount:data.data.total_count, items: [...prev.items, ...data.data.items]}));
+            }
+
+            sethasResult(true);
+
+        } catch (error) {
+            console.log(error);
+        }
+          
+    }
+
+    useEffect(()=>{
+        if(result.items.length == 0){
+            return;
+        }
+        getResult();
+    },[page]);
 
     return(
         <div className={styles['home-page']}>
-            <Header />
-            <div className= {styles['hero-section']}>
+            <Header user={user} />
+            {!hasResult &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
                     "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
                 ]} wrapper="span" speed={50} repeat={Infinity}  /> <br/>worth keeping</h1>
-            </div>
+            </div>}
+           
             <div className= {styles['search-container']}>
                 <div className={styles['search-bar-wrapper']}>
                     <div className={styles['search-bar']}>
-                        <form>
+                        <form onSubmit={(e)=>{
+                            e.preventDefault();
+                            if(!keyword){
+                                console.log("EMPTY");
+                                return;
+                            }
+                            getResult(true);
+                        }}>
                             <label for="search-input"><Search /></label>
-                            <input id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
-                            <button className={styles['search-btn']}>
+                            <input onChange={(e)=>{
+                                setKeyword(e.target.value);
+                            }} id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
+                            <button type="submit" className={styles['search-btn']}>
                                 Search
                             </button>
                         </form>
@@ -189,9 +257,28 @@ function Home(){
                     </div>
                 </div>
             </div>
-            <div className="result-container">
-                
+
+            {hasResult && <div className={styles["result-container"]}>
+                <div className={styles["result-text-header"]}>
+                    <div className={styles["search-result-data"]}>
+                        <p>Search Results</p>
+                        <p>{result.totalcount} found</p>
+                    </div>
+                </div>
+                {result.items.map((item, index)=>{
+                    console.log(item);
+                    return <Card index={index} data={item} />
+                })}
+                <div className={styles['load-more-container']}> 
+                    <button onClick={
+                        ()=>{
+                            setPage(prev => prev +1);
+                        }
+                    } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
+                </div>
             </div>
+            }
+            
             <Footer/>
         </div>
     );

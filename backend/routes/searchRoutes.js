@@ -9,18 +9,18 @@ const router = express.Router();
 
 router.use(verification);
 
-router.get("/search/repositories", verification ,async (req, res)=>{
+router.get("/search/repositories" ,async (req, res)=>{
     
     const {q, sort, page, order } = req.query;
+    console.log(q);
     const response =  await searchByRepos({q, sort, page, order}, req.githubAxios);
     res.send(response);
 });
 
-router.get("/search/:user", verification, async(req, res)=>{
+router.get("/search/user", async(req, res)=>{
     
     const {q, sort, page, order} = req.query;
-    const user = req.params.user;
-    const data = await searchByUser({user, q, sort, page, order}, req.githubAxios);
+    const data = await searchByUser({q, sort, page, order}, req.githubAxios);
     res.send(data.data);
 })
 

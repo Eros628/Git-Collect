@@ -1,18 +1,18 @@
 import express from 'express';
 import { verification } from '../middleware/verification_middleware.js';
 import { githubConfig } from '../config/github.js';
-import { Auth } from '../services/auth_api.js';
+import { Auth, getUser } from '../services/auth_api.js';
 const router = express.Router();
 
 router.get("/github", (req, res)=>{
     const params = new URLSearchParams({
         client_id: githubConfig.client_id,
-        prompt: "select_account"
+        prompt: "select_account",
+        scope: "user repo"
     });
 
     res.redirect(`${githubConfig.redirectURLAuth}?${params.toString()}`);
-})
-
+});
 
 router.get("/github/callback", async(req, res)=>{
     const code = req.query.code;
@@ -37,10 +37,16 @@ router.get("/github/callback", async(req, res)=>{
 
     res.redirect('http://localhost:5173/home');
 
-})
+});
 
 router.get("/verify", verification, (req, res)=>{
     return res.status(200).json({isLogged: true, messsage: "The user is already Log in"})
+});
+
+
+router.get('/user', verification, async(req, res)=>{
+    const user =  await getUser(req.githubAxios);
+    return res.json(user);
 })
 
 
