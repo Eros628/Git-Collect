@@ -1,7 +1,15 @@
-import axios, { formToJSON } from "axios";
+import axios, { create, formToJSON } from "axios";
 import { githubConfig } from "../config/github.js";
+import {DateTime} from 'luxon';
 
+function getUpdatedDate(date){
+    const today = DateTime.now();
+    const end = DateTime.fromISO(date);
+    
+    const diff =  today.diff(end, ['years', 'months', 'days', 'hours', 'minutes']).toObject();
 
+    return diff;
+}
 
 
 export async function  searchByRepos(params, githubAxios){
@@ -19,48 +27,34 @@ export async function  searchByRepos(params, githubAxios){
         },
         );
 
-        const items = response.data.items.map(item =>{
-            const {
-                id, 
-                name, 
-                owner:{
-                    login, 
-                    avatar_url, 
-                    html_url:owner_url, 
-                    repos_url, 
-                    starred_url, 
-                    type
-                },
-                html_url,
-                languages_url,
-                stargazers_count,
-                created_at,
-                updated_at,
-                description,
-                topics,
-                language
-            } = item;
+        const colorList = await axios.get("https://raw.githubusercontent.com/ozh/github-colors/master/colors.json");
 
-            return  {
-                id, 
-                name, 
-                owner:{
-                    login, 
-                    avatar_url, 
-                    html_url:owner_url, 
-                    repos_url, 
-                    starred_url, 
-                    type
+
+        const items = response.data.items.map(item =>{
+            const updatedDate = getUpdatedDate(item.updated_at);
+            const data = {
+                id: item.id,
+                name: item.name,
+                owner: {
+                    login: item.owner.login,
+                    avatar_url: item.owner.avatar_url,
+                    html_url: item.owner.html_url,
+                    repos_url: item.owner.repos_url,
+                    starred_url: item.owner.starred_url,
+                    type: item.owner.type
                 },
-                html_url,
-                languages_url,
-                stargazers_count,
-                created_at,
-                updated_at,
-                description,
-                topics,
-                language
-            } 
+                stargazers_count: item.stargazers_count ??0,
+                html_url: item.html_url,
+                languages_url: item.languages_url,
+                created_at: item.created_at,
+                updated_at: updatedDate,
+                description: item.description || "No description provided.",
+                topics: item.topics,
+                language: item.language || "Unknown",
+                colorLanguage: item.language ? colorList.data[item.language].color : "gray"
+            }
+            
+            return data;
         });
 
         return {total_count: response.data.total_count, items:items};

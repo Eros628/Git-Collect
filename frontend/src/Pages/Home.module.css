@@ -11,8 +11,10 @@
     flex-direction: column;
     height: fit-content;
     min-height: 100vh;
-    gap: 20px;
-    background-image: radial-gradient(circle at top, #20327B 10%, #1D2D6C 22%, #1A285E 33%, #182556 39%, #152047 51%, #101731 69%, #0B0F19 88%) ;
+    background-image: radial-gradient(circle at 50% -80%, #20327B 10%, #1D2D6C 22%, #1A285E 33%, #182556 39%, #152047 51%, #101731 69%, #0B0F19 88%) ;
+    background-repeat: no-repeat;
+    background-size: 100% 1000px;
+    background-color: #0B0F19;
 }
 
 
@@ -196,8 +198,8 @@
     flex: 1;
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(3, 350px);
-    row-gap: 20px;
+    grid-template-columns: repeat(3, 370px);
+    row-gap: 30px;
     column-gap: 40px;
     justify-content: center;
     padding: 0px 40px;
@@ -206,7 +208,7 @@
 .result-text-header{
     grid-row: 1/1;
     grid-column: 1/4;   
-    padding: 0px 5px;
+    padding: 0px 10px;
     border-left: 3px solid var(--header-text-color);
 }
 

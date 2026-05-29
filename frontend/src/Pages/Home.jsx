@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import  styles from '../Pages/Home.module.css';
 import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
-import Card from "../components/Card";
+import RepoCard from "../components/RepoCard";
 
 
 
@@ -23,6 +23,7 @@ function Home(){
     const [keyword, setKeyword]= useState("");
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
+    const [maxPage, setMaxPage] = useState(0);
 
 
     const verify = async()=>{
@@ -132,7 +133,7 @@ function Home(){
             else{
                 setResult(prev=>({totalcount:data.data.total_count, items: [...prev.items, ...data.data.items]}));
             }
-
+            setMaxPage(Math.floor((data.data.total_count / 9)));
             sethasResult(true);
 
         } catch (error) {
@@ -140,6 +141,8 @@ function Home(){
         }
           
     }
+
+
 
     useEffect(()=>{
         if(result.items.length == 0){
@@ -149,7 +152,7 @@ function Home(){
     },[page]);
 
     return(
-        <div className={styles['home-page']}>
+        <div className={styles['home-page']} style={{gap: hasResult ? "50px" : "20px"}}>
             <Header user={user} />
             {!hasResult &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
@@ -267,15 +270,16 @@ function Home(){
                 </div>
                 {result.items.map((item, index)=>{
                     console.log(item);
-                    return <Card index={index} data={item} />
+                    return <RepoCard index={index} data={item} />
                 })}
-                <div className={styles['load-more-container']}> 
+
+                {(result.totalcount > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
                     <button onClick={
                         ()=>{
                             setPage(prev => prev +1);
                         }
                     } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
-                </div>
+                </div>}
             </div>
             }
             

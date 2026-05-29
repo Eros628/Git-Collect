@@ -1,8 +1,30 @@
 import { Plus, Star } from "lucide-react";
 import '../App.css';
 
-function Card(param){
-    console.log(param.data.name);
+function RepoCard(param){
+    const languageColor = {
+        Javascript: ""
+    }
+    const getUpdatedDate = (date)=>{
+        if(date.years > 0){
+            return `${Math.floor(date.years)} ${date.years == 1 ? "year" :"years"}`;
+        }
+        else if(date.months > 0){
+            return `${Math.floor(date.months)} ${date.months == 1 ? "month" :"months"}`;
+        }
+        else if(date.days > 0){
+           return `${Math.floor(date.days)} ${date.days == 1 ? "day" :"days"}`;
+        }
+        else if(date.hours > 0){
+            return `${Math.floor(date.hours)} ${date.hours == 1 ? "hour" :"hours"}`;
+        }
+        else if(date.minutes > 0){
+            return `${Math.floor(date.minutes)} ${date.minutes == 1 ? "minute" :"minutes"}`;
+        }
+        else{
+            return `seconds`;
+        }
+    }
     return(
         <div className="card-wrapper" key={param.index}>
             <div className="card-header">
@@ -32,7 +54,7 @@ function Card(param){
             <div className="card-footer">
                 <div>
                     <div className="language-container">
-                        <div className="circle"></div>
+                        <div className="circle" style={{backgroundColor: param.data.colorLanguage}}></div>
                         <p>{param.data.language}</p>
                     </div>
                     <div className="stars-container">
@@ -40,10 +62,10 @@ function Card(param){
                         <p>{param.data.stargazers_count}</p>
                     </div>
                 </div>
-                <p>Updated 1 day ago</p>
+                <p>Updated {getUpdatedDate(param.data.updated_at)} a ago</p>
             </div>
         </div>
     )
 }
 
-export default Card;
+export default RepoCard;
