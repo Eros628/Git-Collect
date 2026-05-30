@@ -8,24 +8,29 @@ import  styles from '../Pages/Home.module.css';
 import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
 import RepoCard from "../components/RepoCard";
+import { useQuery } from "@tanstack/react-query";
 
 
 
 function Home(){
+    const navigate = useNavigate();
+
     const [type, setType] = useState('repository');
     const [isTypeOpen, setTypeOpen]= useState(false);
     const [isSearchInOpen, setSearchInOpen] = useState(false);
     const [isLangOpen, setLangOpen] = useState(false);
     const [isSortOpen, setSortOpen] = useState(false);
+    
     const [user, setUser] = useState({});
-    const [hasResult, sethasResult] = useState(false);
-    const [result, setResult] = useState({totalcount: "", items:[]});
     const [keyword, setKeyword]= useState("");
+
     const [page, setPage] = useState(1);
-    const navigate = useNavigate();
+    const[maxNumDisplay, setMaxNumDisplay] = useState(9);
     const [maxPage, setMaxPage] = useState(0);
 
-
+    const [finalFilter, setFinalFilter] = useState({});
+    const [isFetch, setIsFetch] = useState(false);
+    
     const verify = async()=>{
         try {
             const verify = await axios.get("http://localhost:3000/gitcollect/auth/verify", {
@@ -86,6 +91,7 @@ function Home(){
         sort: "Best Match"
     });
 
+
     const lang = ['Javascript','HTML','CSS' , "Python", "Typescript", "Java", "C++", 'C#', 'PHP', 'C', 'Shell', 'Go', 'Rust', 'Ruby', 'Swift', 'Dart', 'R', 'Kotlin']
 
     const displayText = ['repositories', 'projects', 'libraries', 'tools', 'frameworks'];
@@ -103,58 +109,42 @@ function Home(){
         }
     }, [selectedFilter.type]);
 
-    const getResult = async(fromSubmit = false)=>{
-        try {
-            let data; 
-            if(selectedFilter.type == "repository"){
-                data = await axios.get("http://localhost:3000/gitcollect/api/search/repositories", {withCredentials: true,
-                    params: {
-                        q: `${keyword} in:${selectedFilter.in} lang:${selectedFilter.lang}`,
-                        sort: selectedFilter.sort,
-                        page: page
-                    }},
-                    );
-            }
-            else if(selectedFilter.type == "user" || selectedFilter.type == "org"){
-                data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
-                    {withCredentials: true,
-                    params: {
-                        q: `${keyword} in:${selectedFilter.in} type:${selectedFilter.type}`,
-                        sort: selectedFilter.sort,
-                        page: page
-                    }},
-                    );
-            }
-
-            if(fromSubmit){
-                setResult({totalcount:data.data.total_count, items: [...data.data.items]});
-            }
-
-            else{
-                setResult(prev=>({totalcount:data.data.total_count, items: [...prev.items, ...data.data.items]}));
-            }
-            setMaxPage(Math.floor((data.data.total_count / 9)));
-            sethasResult(true);
-
-        } catch (error) {
-            console.log(error);
+    const getResult = async()=>{
+        let data; 
+        if(finalFilter.type == "repository"){
+            data = await axios.get("http://localhost:3000/gitcollect/api/search/repositories", {withCredentials: true,
+                params: {
+                    q: `${keyword} in:${finalFilter.in} lang:${finalFilter.lang}`,
+                    sort: finalFilter.sort,
+                }},
+                );
         }
-          
+        else if(finalFilter.type == "user" || finalFilter.type == "org"){
+            data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
+                {withCredentials: true,
+                params: {
+                    q: `${keyword} in:${finalFilter.in} type:${finalFilter.type}`,
+                    sort: finalFilter.sort,
+                }},
+                );
+        }
+        console.log(data.data.limit_remaining);
+        setMaxPage(Math.floor((data.data.total_count / 9)));
+        return data.data;   
     }
 
-
-
-    useEffect(()=>{
-        if(result.items.length == 0){
-            return;
-        }
-        getResult();
-    },[page]);
+    const {data, isLoading, isError, isSuccess,fetchStatus, refetch} = useQuery({
+        queryKey: ['result', {keyword, ...finalFilter}],
+        queryFn: getResult,
+        enabled: isFetch,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 10
+    });
 
     return(
-        <div className={styles['home-page']} style={{gap: hasResult ? "50px" : "20px"}}>
+        <div className={styles['home-page']} style={{gap: isSuccess ? "50px" : "20px"}}>
             <Header user={user} />
-            {!hasResult &&  <div className= {styles['hero-section']}>
+            {(fetchStatus === "idle" && !isSuccess) &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
                     "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
                 ]} wrapper="span" speed={50} repeat={Infinity}  /> <br/>worth keeping</h1>
@@ -165,16 +155,19 @@ function Home(){
                     <div className={styles['search-bar']}>
                         <form onSubmit={(e)=>{
                             e.preventDefault();
-                            if(!keyword){
+                            const inputData = e.target.elements.searchInput.value;
+                            if(!inputData){
                                 console.log("EMPTY");
                                 return;
                             }
-                            getResult(true);
+                            setKeyword(inputData);
+                            setFinalFilter({...selectedFilter});
+                            setIsFetch(true);
+                            setMaxNumDisplay(9);
+                            setPage(1);
                         }}>
                             <label for="search-input"><Search /></label>
-                            <input onChange={(e)=>{
-                                setKeyword(e.target.value);
-                            }} id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
+                            <input name="searchInput"  id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
                             <button type="submit" className={styles['search-btn']}>
                                 Search
                             </button>
@@ -261,22 +254,22 @@ function Home(){
                 </div>
             </div>
 
-            {hasResult && <div className={styles["result-container"]}>
+            {isSuccess && <div className={styles["result-container"]}>
                 <div className={styles["result-text-header"]}>
                     <div className={styles["search-result-data"]}>
                         <p>Search Results</p>
-                        <p>{result.totalcount} found</p>
+                        <p>{data.total_count} found</p>
                     </div>
                 </div>
-                {result.items.map((item, index)=>{
-                    console.log(item);
-                    return <RepoCard index={index} data={item} />
+                {data.items.slice(0, maxNumDisplay).map((item, index)=>{
+                    return <div key={index}><RepoCard  data={item} /> </div>
                 })}
 
-                {(result.totalcount > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
+                {(data.total_count > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
                     <button onClick={
                         ()=>{
                             setPage(prev => prev +1);
+                            setMaxNumDisplay(prev => prev + 9);
                         }
                     } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
                 </div>}

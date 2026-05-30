@@ -1,10 +1,7 @@
 import { Plus, Star } from "lucide-react";
 import '../App.css';
 
-function RepoCard(param){
-    const languageColor = {
-        Javascript: ""
-    }
+function RepoCard({data}){
     const getUpdatedDate = (date)=>{
         if(date.years > 0){
             return `${Math.floor(date.years)} ${date.years == 1 ? "year" :"years"}`;
@@ -26,13 +23,13 @@ function RepoCard(param){
         }
     }
     return(
-        <div className="card-wrapper" key={param.index}>
+        <div className="card-wrapper">
             <div className="card-header">
                 <div className="profile-container">
-                    <img src={param.data.owner.avatar_url} alt="" className="avatar" />
+                    <img src={data.owner.avatar_url} alt="" className="avatar" />
                     <div className="name-container">
-                        <p>{param.data.name}</p>
-                        <p>@{param.data.owner.login}</p>
+                        <p>{data.name}</p>
+                        <p>@{data.owner.login}</p>
                     </div>
                 </div>
                 <button className="add-collection-btn">
@@ -41,12 +38,12 @@ function RepoCard(param){
             </div>
             <div className="card-description">
                 <p>
-                    {param.data.description}
+                    {data.description}
                 </p>
                
             </div>
             <div className="card-topic">
-                {param.data.topics.slice(0,3).map((item, index)=>{
+                {data.topics.slice(0,3).map((item, index)=>{
                     return <p title={item} key={index}>{item}</p>
                 })}
             </div>
@@ -54,15 +51,15 @@ function RepoCard(param){
             <div className="card-footer">
                 <div>
                     <div className="language-container">
-                        <div className="circle" style={{backgroundColor: param.data.colorLanguage}}></div>
-                        <p>{param.data.language}</p>
+                        <div className="circle" style={{backgroundColor: data.colorLanguage}}></div>
+                        <p>{data.language}</p>
                     </div>
                     <div className="stars-container">
                         <Star size={15} fill="yellow" color="yellow"/>
-                        <p>{param.data.stargazers_count}</p>
+                        <p>{data.stargazers_count}</p>
                     </div>
                 </div>
-                <p>Updated {getUpdatedDate(param.data.updated_at)} a ago</p>
+                <p>Updated {getUpdatedDate(data.updated_at)} a ago</p>
             </div>
         </div>
     )
