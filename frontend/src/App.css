@@ -215,6 +215,66 @@
     gap: 5px;
 }
 
+.user.card-wrapper{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 15px;
+}
+
+.user-avatar-container{
+    display: flex;
+    justify-content: center;
+}
+
+.user-avatar-container > img{
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+   
+}
+
+.card-profile-container{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 10px;
+}
+.name-wrapper{
+    font-family: var(--secondary-font);
+}
+
+.name-wrapper > p:nth-child(1){
+    font-size: var(--text-normal-large);
+}
+
+.name-wrapper > p:nth-child(2){
+    font-size: var(--text-normal-meduim);
+    color: #A8A7A7;
+}
+
+.user-metadata{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.user-metadata > div{
+    display: flex;
+    gap: 5px;
+    font-size: var(--text-normal-small);
+    font-family: var(--secondary-font);
+    align-items: center;
+}
+
+.button-container{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
 @media(max-width: 390px){
 
     .header-login{

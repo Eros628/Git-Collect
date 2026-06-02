@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from 'axios';
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router";
 import  styles from '../Pages/Home.module.css';
 import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
 import RepoCard from "../components/RepoCard";
-import { useQuery } from "@tanstack/react-query";
+import UserCard from '../components/UserCard';
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 
 
@@ -30,6 +31,8 @@ function Home(){
 
     const [finalFilter, setFinalFilter] = useState({});
     const [isFetch, setIsFetch] = useState(false);
+    
+
     
     const verify = async()=>{
         try {
@@ -120,6 +123,7 @@ function Home(){
                 );
         }
         else if(finalFilter.type == "user" || finalFilter.type == "org"){
+            
             data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
                 {withCredentials: true,
                 params: {
@@ -133,6 +137,11 @@ function Home(){
         return data.data;   
     }
 
+    const getUserMetaData = async(username) =>{
+        const userData = await axios.get('http://localhost:3000/gitcollect/user', {withCredentials: true, params:{user: username}});
+        return userData.data;
+    }   
+
     const {data, isLoading, isError, isSuccess,fetchStatus, refetch} = useQuery({
         queryKey: ['result', {keyword, ...finalFilter}],
         queryFn: getResult,
@@ -140,6 +149,26 @@ function Home(){
         staleTime: 1000 * 60 * 2,
         gcTime: 1000 * 60 * 10
     });
+
+
+    const userResult = useQueries({
+        queries: (data?.items || []).slice(0, maxNumDisplay).map((user)=>({
+            queryKey: ['user', user.id],
+            queryFn: ()=>getUserMetaData(user.login),
+            enabled: !!user.login
+        })),
+        combine: (users)=>{
+            return{
+                data: users.map((user)=>user.data),
+                pending: users.some((user)=> user.isPending),
+                fetching: users.some((user)=>user.isFetching),
+                error: users.some((user)=> user.isError),
+            }
+        },
+        staleTime: 1000 * 60 * 10
+    });
+
+    console.log(data);
 
     return(
         <div className={styles['home-page']} style={{gap: isSuccess ? "50px" : "20px"}}>
@@ -253,6 +282,7 @@ function Home(){
                     </div>
                 </div>
             </div>
+                                        
 
             {isSuccess && <div className={styles["result-container"]}>
                 <div className={styles["result-text-header"]}>
@@ -261,7 +291,13 @@ function Home(){
                         <p>{data.total_count} found</p>
                     </div>
                 </div>
-                {data.items.slice(0, maxNumDisplay).map((item, index)=>{
+                { (finalFilter.type == "user" || finalFilter.type == "org")? (!userResult.isPending && userResult.data.map((item, index)=>{
+                    if(!item) return null;
+                    return <div key={index}> <UserCard data={item}/> </div>
+                }))
+                :
+                
+                data.items.slice(0, maxNumDisplay).map((item, index)=>{
                     return <div key={index}><RepoCard  data={item} /> </div>
                 })}
 

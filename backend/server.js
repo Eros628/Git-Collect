@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import searchRoutes from './routes/searchRoutes.js';
-import authRoutes from './routes/authRoutes.js';
+import search from './routes/search.js';
+import auth from './routes/auth.js';
+import user from './routes/user.js';
+
 
 
 
@@ -15,8 +17,9 @@ app.use(cors({
 
 app.use(cookieParser());
 
-app.use('/gitcollect/api', searchRoutes);
-app.use('/gitcollect/auth', authRoutes);
+app.use('/gitcollect/api', search);
+app.use('/gitcollect/auth', auth);
+app.use('/gitcollect/user', user)
 
 
 app.listen(3000, ()=>{

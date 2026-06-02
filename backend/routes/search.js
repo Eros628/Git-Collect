@@ -1,6 +1,6 @@
 import express from 'express';
 import {verification} from '../middleware/verification_middleware.js';
-import { getUserAllRepos, searchByRepos, searchByUser } from '../services/search_api.js';
+import {searchByRepos, searchByUser } from '../services/searchService.js';
 
 
 const router = express.Router();

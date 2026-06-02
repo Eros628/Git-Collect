@@ -1,7 +1,7 @@
 import express from 'express';
 import { verification } from '../middleware/verification_middleware.js';
 import { githubConfig } from '../config/github.js';
-import { Auth, getUser } from '../services/auth_api.js';
+import { Auth, getUser } from '../services/authService.js';
 const router = express.Router();
 
 router.get("/github", (req, res)=>{
