@@ -9,7 +9,7 @@ import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
 import RepoCard from "../components/RepoCard";
 import UserCard from '../components/UserCard';
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
 
 
 
@@ -112,27 +112,31 @@ function Home(){
         }
     }, [selectedFilter.type]);
 
-    const getResult = async()=>{
+    const getResult = async(pageParam)=>{
         let data; 
+        console.log(`PAGE PARAM: ${pageParam}`);
+
         if(finalFilter.type == "repository"){
             data = await axios.get("http://localhost:3000/gitcollect/api/search/repositories", {withCredentials: true,
                 params: {
                     q: `${keyword} in:${finalFilter.in} lang:${finalFilter.lang}`,
                     sort: finalFilter.sort,
+                    page: pageParam
                 }},
                 );
         }
         else if(finalFilter.type == "user" || finalFilter.type == "org"){
             
-            data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
-                {withCredentials: true,
-                params: {
-                    q: `${keyword} in:${finalFilter.in} type:${finalFilter.type}`,
-                    sort: finalFilter.sort,
-                }},
-                );
+                data = await axios.get("http://localhost:3000/gitcollect/api/search/user", 
+                    {withCredentials: true,
+                    params: {
+                        q: `${keyword} in:${finalFilter.in} type:${finalFilter.type}`,
+                        sort: finalFilter.sort,
+                        page: pageParam
+                    }},
+                    );
         }
-        console.log(data.data.limit_remaining);
+
         setMaxPage(Math.floor((data.data.total_count / 9)));
         return data.data;   
     }
@@ -142,20 +146,26 @@ function Home(){
         return userData.data;
     }   
 
-    const {data, isLoading, isError, isSuccess,fetchStatus, refetch} = useQuery({
+    const {data, isLoading, isError, isSuccess,fetchStatus,fetchNextPage,} = useInfiniteQuery({
         queryKey: ['result', {keyword, ...finalFilter}],
-        queryFn: getResult,
+        queryFn: ({pageParam = 1})=> getResult(pageParam),
         enabled: isFetch,
         staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 10
+        gcTime: 1000 * 60 * 10,
+        getNextPageParam: (lastPage, allPages)=>{
+            console.log(lastPage.items.length == 100);
+            return lastPage.items.length == 100 ? allPages.length + 1 : undefined;  
+        }
     });
-
+       
+    const dataCombinedPages = data?.pages.flatMap((page)=> page.items) || [];
 
     const userResult = useQueries({
-        queries: (data?.items || []).slice(0, maxNumDisplay).map((user)=>({
+        queries: dataCombinedPages.slice(0, maxNumDisplay).map((user)=>({
             queryKey: ['user', user.id],
             queryFn: ()=>getUserMetaData(user.login),
-            enabled: !!user.login
+            enabled: !!user.login,
+            staleTime: 1000 * 60 * 10
         })),
         combine: (users)=>{
             return{
@@ -164,16 +174,26 @@ function Home(){
                 fetching: users.some((user)=>user.isFetching),
                 error: users.some((user)=> user.isError),
             }
-        },
-        staleTime: 1000 * 60 * 10
+        }
     });
 
-    console.log(data);
+    useEffect(()=>{
+        if(!userResult){
+            return;
+        }
+
+        if(userResult.data.length % 100 === 0){
+            console.log("MAXXX");
+            fetchNextPage();
+            return;
+        }
+    },[page])
+
 
     return(
         <div className={styles['home-page']} style={{gap: isSuccess ? "50px" : "20px"}}>
             <Header user={user} />
-            {(fetchStatus === "idle" && !isSuccess) &&  <div className= {styles['hero-section']}>
+            {(!isSuccess) &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
                     "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
                 ]} wrapper="span" speed={50} repeat={Infinity}  /> <br/>worth keeping</h1>
@@ -288,7 +308,7 @@ function Home(){
                 <div className={styles["result-text-header"]}>
                     <div className={styles["search-result-data"]}>
                         <p>Search Results</p>
-                        <p>{data.total_count} found</p>
+                        <p>{data.pages[0].total_count} found</p>
                     </div>
                 </div>
                 { (finalFilter.type == "user" || finalFilter.type == "org")? (!userResult.isPending && userResult.data.map((item, index)=>{
@@ -297,15 +317,16 @@ function Home(){
                 }))
                 :
                 
-                data.items.slice(0, maxNumDisplay).map((item, index)=>{
+                dataCombinedPages.slice(0, maxNumDisplay).map((item, index)=>{
                     return <div key={index}><RepoCard  data={item} /> </div>
                 })}
 
-                {(data.total_count > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
+                {(data.pages[0].total_count > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
                     <button onClick={
                         ()=>{
                             setPage(prev => prev +1);
                             setMaxNumDisplay(prev => prev + 9);
+
                         }
                     } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
                 </div>}

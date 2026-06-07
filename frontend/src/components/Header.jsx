@@ -4,7 +4,7 @@ import '../App.css';
 
 function Header({user}){
     const location = useLocation();
-    console.log(location.pathname);
+
     return(
         <div className={(location.pathname == '/login' || location.pathname =='/') ? 'header login' : 'header home'}>
             <div className="logo-container">

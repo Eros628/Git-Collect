@@ -11,9 +11,9 @@ router.use(verification);
 
 router.get("/search/repositories" ,async (req, res)=>{
     
-    const {q, sort, order } = req.query;
+    const {q, sort, order, page} = req.query;
     console.log(q);
-    const response =  await searchByRepos({q, sort, order}, req.githubAxios);
+    const response =  await searchByRepos({q, sort,page, order}, req.githubAxios);
     res.send(response);
 });
 
@@ -21,7 +21,7 @@ router.get("/search/user", async(req, res)=>{
     
     const {q, sort, page, order} = req.query;
     const data = await searchByUser({q, sort, page, order}, req.githubAxios);
-    res.send(data.data);
+    res.send(data);
 })
 
 router.get("/:user/repos", async(req, res)=>{ 

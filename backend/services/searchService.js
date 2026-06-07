@@ -21,13 +21,15 @@ export async function  searchByRepos(params, githubAxios){
                 q: params.q, 
                 sort: params.sort,
                 order: params.order,
+                page: params.page,
+                per_page: 100
             },
         },
         );
 
         const limit_remaining = response.headers['x-ratelimit-remaining'];
         const colorList = await axios.get("https://raw.githubusercontent.com/ozh/github-colors/master/colors.json");
-        console.log(limit_remaining);
+      
         const items = response.data.items.map(item =>{
             const updatedDate = getUpdatedDate(item.updated_at);
             const data = {
@@ -68,9 +70,12 @@ export async function searchByUser(params, githubAxios) {
                 q: params.q, 
                 sort: params.sort,
                 order: params.order,
+                page: params.page,
+                per_page: 100
             }}
         );  
-        return response;
+        const limit_remaining = response.headers['x-ratelimit-remaining'];
+        return {limit_remaining, ...response.data};
     } catch (error) {
         console.log(error);
     }

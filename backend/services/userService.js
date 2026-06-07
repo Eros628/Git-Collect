@@ -4,7 +4,8 @@ import { response } from "express";
 export async function getUser(user, githubAxios){
     try {
         const response = await githubAxios.get(`/users/${user}`);
-        return response.data;
+        const limit_remaining = response.headers['x-ratelimit-remaining'];
+        return {limit_remaining, ...response.data};
 
     } catch (error) {
         console.log(error);
@@ -14,6 +15,7 @@ export async function getUser(user, githubAxios){
 
 export async function getUserAllRepos(user, githubAxios){
     try {
+        console.log(user);
         const response = await githubAxios.get(`/users/${user}/repos`);
         const response_starred_repo = await githubAxios.get(`/users/${user}/starred`);
 
