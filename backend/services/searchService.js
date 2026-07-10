@@ -51,7 +51,7 @@ export async function  searchByRepos(params, githubAxios){
                 description: item.description || "No description provided.",
                 topics: item.topics,
                 language: item.language || "Unknown",
-                colorLanguage: item.language ? colorList.data[item.language].color : "gray"
+                colorLanguage: colorList.data[item.language]?.color || "gray"
             }
             
             return data;

@@ -31,7 +31,7 @@ router.get("/github/callback", async(req, res)=>{
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    maxAge: 1000000
+    maxAge: 2000000
    }); 
 
 

@@ -10,6 +10,8 @@ import {TypeAnimation} from 'react-type-animation';
 import RepoCard from "../components/RepoCard";
 import UserCard from '../components/UserCard';
 import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
+import LoadingSkeletonCard from "../components/SkeletonCard";
+import Skeleton from "react-loading-skeleton";
 
 
 
@@ -46,7 +48,6 @@ function Home(){
                 });
 
                 setUser(userData.data);
-                console.log(userData.data);
                 return;
             }
 
@@ -116,10 +117,10 @@ function Home(){
         let data; 
         console.log(`PAGE PARAM: ${pageParam}`);
 
-        if(finalFilter.type == "repository"){
+        if(finalFilter.type == "repository" || finalFilter.type == "topics"){
             data = await axios.get("http://localhost:3000/gitcollect/api/search/repositories", {withCredentials: true,
                 params: {
-                    q: `${keyword} in:${finalFilter.in} lang:${finalFilter.lang}`,
+                    q:  finalFilter.type == "topics" ? `topic:${keyword}`: `${keyword}` +` in:${finalFilter.in} lang:${finalFilter.lang}`,
                     sort: finalFilter.sort,
                     page: pageParam
                 }},
@@ -146,14 +147,13 @@ function Home(){
         return userData.data;
     }   
 
-    const {data, isLoading, isError, isSuccess,fetchStatus,fetchNextPage,} = useInfiniteQuery({
+    const {data, isLoading, isError, isSuccess,fetchStatus,fetchNextPage} = useInfiniteQuery({
         queryKey: ['result', {keyword, ...finalFilter}],
         queryFn: ({pageParam = 1})=> getResult(pageParam),
         enabled: isFetch,
         staleTime: 1000 * 60 * 2,
         gcTime: 1000 * 60 * 10,
         getNextPageParam: (lastPage, allPages)=>{
-            console.log(lastPage.items.length == 100);
             return lastPage.items.length == 100 ? allPages.length + 1 : undefined;  
         }
     });
@@ -170,30 +170,34 @@ function Home(){
         combine: (users)=>{
             return{
                 data: users.map((user)=>user.data),
-                pending: users.some((user)=> user.isPending),
+                loading: users.some((user)=> user.isLoading),
                 fetching: users.some((user)=>user.isFetching),
-                error: users.some((user)=> user.isError),
+                error: users.every((user)=> user.isError),
+                fetched: users.every((user)=>user.isFetched),
+                success: users.every((user)=> user.isSuccess)
             }
         }
     });
 
     useEffect(()=>{
-        if(!userResult){
-            return;
-        }
-
-        if(userResult.data.length % 100 === 0){
-            console.log("MAXXX");
+    
+        if(userResult?.data?.length % 100 === 0){
             fetchNextPage();
             return;
         }
     },[page])
 
 
+    const hasLoadedData  = (finalFilter.type == "user" || finalFilter.type == "org") ? userResult.data?.some((item)=>item !== undefined) : dataCombinedPages.length > 0;
+
+    const showSkeleton = isFetch && !hasLoadedData;
+    const showData = isSuccess && hasLoadedData;
+    
+ 
     return(
         <div className={styles['home-page']} style={{gap: isSuccess ? "50px" : "20px"}}>
             <Header user={user} />
-            {(!isSuccess) &&  <div className= {styles['hero-section']}>
+            {!isFetch &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
                     "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
                 ]} wrapper="span" speed={50} repeat={Infinity}  /> <br/>worth keeping</h1>
@@ -216,7 +220,7 @@ function Home(){
                             setPage(1);
                         }}>
                             <label for="search-input"><Search /></label>
-                            <input name="searchInput"  id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
+                            <input autoComplete="off" name="searchInput"  id="search-input" placeholder="Search repositories, users, orgs, or topics"></input>
                             <button type="submit" className={styles['search-btn']}>
                                 Search
                             </button>
@@ -303,35 +307,59 @@ function Home(){
                 </div>
             </div>
                                         
-
-            {isSuccess && <div className={styles["result-container"]}>
-                <div className={styles["result-text-header"]}>
-                    <div className={styles["search-result-data"]}>
-                        <p>Search Results</p>
-                        <p>{data.pages[0].total_count} found</p>
+            {showSkeleton &&
+                <div className={styles['result-container']}>
+                    <div className={styles['result-text-header']}>
+                        <div className={styles["search-result-data"]}>
+                                <p><Skeleton width={150}/></p>
+                                <p><Skeleton width={150}/></p>
+                        </div>
                     </div>
+                    {Array(9).fill(0).map((_, index)=>(
+                        <LoadingSkeletonCard key={index} type={finalFilter.type}/>
+                    ))}
+        
                 </div>
-                { (finalFilter.type == "user" || finalFilter.type == "org")? (!userResult.isPending && userResult.data.map((item, index)=>{
-                    if(!item) return null;
-                    return <div key={index}> <UserCard data={item}/> </div>
-                }))
-                :
-                
-                dataCombinedPages.slice(0, maxNumDisplay).map((item, index)=>{
-                    return <div key={index}><RepoCard  data={item} /> </div>
-                })}
-
-                {(data.pages[0].total_count > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
-                    <button onClick={
-                        ()=>{
-                            setPage(prev => prev +1);
-                            setMaxNumDisplay(prev => prev + 9);
-
+            
+                }
+            {
+                showData && 
+                <div className={styles["result-container"]}>
+                    <div className={styles["result-text-header"]}>
+                        <div className={styles["search-result-data"]}>
+                            <p>Search Results</p>
+                            <p>{data.pages[0].total_count} found</p>
+                        </div>
+                    </div>
+                    { (finalFilter.type == "user" || finalFilter.type == "org")? userResult.data.map((item, index)=>{
+                        if(!item){
+                            return <LoadingSkeletonCard key={index} type={finalFilter.type}/>
                         }
-                    } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
-                </div>}
-            </div>
+                        else{
+                            return <div key={index}> <UserCard data={item}/> </div>
+                        }
+                    })
+                    :
+                    
+                    dataCombinedPages.slice(0, maxNumDisplay).map((item, index)=>{
+                        return <div key={index}><RepoCard  data={item} /> </div>
+                    })}
+
+                    {(data.pages[0].total_count > 9 && page <= maxPage) && <div className={styles['load-more-container']}> 
+                        <button onClick={
+                            ()=>{
+                                setPage(prev => prev +1);
+                                setMaxNumDisplay(prev => prev + 9);
+
+                            }
+                        } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
+                    </div>}
+                </div>
             }
+                
+                              
+             
+            
             
             <Footer/>
         </div>

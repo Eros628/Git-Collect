@@ -237,23 +237,22 @@
 .card-profile-container{
     flex: 1;
     display: flex;
+    width: 50%;
     flex-direction: column;
     justify-content: start;
     align-items: start;
     gap: 10px;
 }
 .name-wrapper{
+    max-width: 100%;
+}
+.name-wrapper > p{
     font-family: var(--secondary-font);
+    font-size: clamp(1rem, var(--text-normal-meduim), 1.3rem);
+    max-width: 100%;
 }
 
-.name-wrapper > p:nth-child(1){
-    font-size: var(--text-normal-large);
-}
 
-.name-wrapper > p:nth-child(2){
-    font-size: var(--text-normal-meduim);
-    color: #A8A7A7;
-}
 
 .user-metadata{
     display: flex;

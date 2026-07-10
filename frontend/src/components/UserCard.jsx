@@ -3,7 +3,8 @@ import {DateTime} from 'luxon';
 
 
 function UserCard({data}){
-    const date = DateTime.fromISO(data.created_at).toLocaleString;
+    const date = DateTime.fromISO(data.created_at).toLocaleString();
+
     return(
         <div className="user card-wrapper">
             <div className="user-avatar-container">
@@ -24,7 +25,7 @@ function UserCard({data}){
                     </div>
                     <div>
                         <Calendar />
-                        <p>Joined{date}</p>
+                        <p>Joined {date.replaceAll("/", "|")}</p>
                     </div>
                 </div>
             </div>
