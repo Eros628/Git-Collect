@@ -5,6 +5,7 @@ import Login from './Pages/Login';
 import Home from './Pages/Home';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import { SkeletonTheme } from 'react-loading-skeleton';
+import Repository from './Pages/Repository';
 const queryClient = new QueryClient();
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<Login />}></Route>
             <Route path='login' element={<Login />}></Route>
             <Route path='home' element={<Home />}></Route>
+            <Route path='repository' element={<Repository />}></Route>
           </Routes>
         </BrowserRouter>
       </SkeletonTheme>
