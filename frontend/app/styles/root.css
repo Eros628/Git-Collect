@@ -1,16 +1,19 @@
+#root{
+    margin: 0;
+}
 .header{
     position: sticky;
     top: 0;
     display: flex;
     padding: 15px 40px;
     z-index: 99;
+    color: white;
 }
 
 .header.home{
     align-items: center;
     background-color: rgba(30, 37, 56, 80%);
     backdrop-filter: blur(15px);
-    position: sticky;
 }
 
 

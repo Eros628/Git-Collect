@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from 'axios';
 import { Search, User } from "lucide-react";
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router";
-import  styles from '../Pages/Home.module.css';
 import { ChevronDown, ChevronUp,CircleArrowDown } from "lucide-react";
 import {TypeAnimation} from 'react-type-animation';
 import RepoCard from "../components/RepoCard";
@@ -13,9 +12,10 @@ import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
 import LoadingSkeletonCard from "../components/SkeletonCard";
 import Skeleton from "react-loading-skeleton";
 
+import  styles from '../styles/home.module.css';
+import { AuthUserContext } from "../context/authUserContext";
 
-
-function Home(){
+export default function Home(){
     const navigate = useNavigate();
 
     const [type, setType] = useState('repository');
@@ -23,44 +23,16 @@ function Home(){
     const [isSearchInOpen, setSearchInOpen] = useState(false);
     const [isLangOpen, setLangOpen] = useState(false);
     const [isSortOpen, setSortOpen] = useState(false);
-    
-    const [user, setUser] = useState({});
     const [keyword, setKeyword]= useState("");
-
     const [page, setPage] = useState(1);
     const[maxNumDisplay, setMaxNumDisplay] = useState(9);
     const [maxPage, setMaxPage] = useState(0);
-
     const [finalFilter, setFinalFilter] = useState({});
     const [isFetch, setIsFetch] = useState(false);
+
+    const user = useContext(AuthUserContext);
     
 
-    
-    const verify = async()=>{
-        try {
-            const verify = await axios.get("http://localhost:3000/gitcollect/auth/verify", {
-            withCredentials: true
-            });
-
-            if(verify.data.isLogged){
-                const userData = await axios.get("http://localhost:3000/gitcollect/auth/user", {
-                    withCredentials: true
-                });
-
-                setUser(userData.data);
-                return;
-            }
-
-        } catch (error) {
-            console.log(error);
-            navigate('/login');
-        }
-        
-    };
-
-    useEffect(()=>{
-      verify();
-    }, []);
     
     const filters = [{
             type: "repository",
@@ -196,7 +168,7 @@ function Home(){
  
     return(
         <div className={styles['home-page']} style={{gap: isSuccess ? "50px" : "20px"}}>
-            <Header user={user} />
+            <Header user={user}/>
             {!isFetch &&  <div className= {styles['hero-section']}>
                 <h1 className={styles['text-hero-section']}>Find <TypeAnimation sequence={[
                     "repositories", 5000, "projects", 5000, "libraries", 5000, "tools", 5000, "frameworks", 5000
@@ -355,16 +327,8 @@ function Home(){
                         } className={styles['load-more-btn']}>Load more <CircleArrowDown size={20} /></button>
                     </div>}
                 </div>
-            }
-                
-                              
-             
-            
-            
-            <Footer/>
+            }     
+            <Footer/>           
         </div>
     );
 }
-
-
-export default Home;

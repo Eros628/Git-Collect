@@ -1,5 +1,5 @@
 import { Plus, Star } from "lucide-react";
-import '../App.css';
+import '../styles/root.css';
 
 function RepoCard({data}){
     const getUpdatedDate = (date)=>{

@@ -1,9 +1,9 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import {Search, Layers, Info} from 'lucide-react';
-import styles from '../Pages/Login.module.css';
+import styles from '../styles/login.module.css';
 
-function Login(){
+export default function login(){
     return(
         <div className={styles['login-page']}>
             <Header />
@@ -78,7 +78,3 @@ function Login(){
 
     )
 }
-
-
-
-export default Login;

@@ -1,5 +1,5 @@
 import {Mail} from 'lucide-react';
-import '../App.css';
+import '../styles/root.css';
 
 function Footer(){
     return(

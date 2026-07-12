@@ -1,6 +1,6 @@
 import {FolderGit2} from 'lucide-react';
 import { useNavigate, useLocation} from 'react-router';
-import '../App.css';
+import '../styles/root.css';
 
 function Header({user}){
     const location = useLocation();
@@ -13,7 +13,7 @@ function Header({user}){
             </div>
 
             {
-                (location.pathname != '/login' && location.pathname != "/" ) && 
+                (location.pathname != '/login' && location.pathname != "/" && !!user ) && 
                 <div className="nav-container">
                     <a href="">Search</a>
                     <a href="">Collections</a>
@@ -22,7 +22,7 @@ function Header({user}){
             }
 
             {
-                (location.pathname != '/login' && location.pathname != "/" ) &&
+                (location.pathname != '/login' && location.pathname != "/" && !!user ) &&
                   <div className="profile-container">
                     <p className="username">
                         {user.username}
