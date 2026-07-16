@@ -1,6 +1,12 @@
 #root{
     margin: 0;
 }
+
+body{
+    overflow-x: hidden;
+}
+
+
 .header{
     position: sticky;
     top: 0;
@@ -11,6 +17,8 @@
 }
 
 .header.home{
+    position: sticky;
+    top:0;
     align-items: center;
     background-color: rgba(30, 37, 56, 80%);
     backdrop-filter: blur(15px);
@@ -83,6 +91,7 @@
     padding: 15px 40px;
     align-items: center;
     justify-content: space-between;
+    color: white;
 }
 
 .copyright-container{
